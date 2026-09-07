@@ -5,14 +5,18 @@ import os
 import signal
 import sys
 from contextlib import asynccontextmanager
+from pathlib import Path
 
 import uvicorn
+from dotenv import load_dotenv
 from fastapi import FastAPI
 
 from api.routes import create_app
 from core.hls_generator import HLSGenerator
 from core.ingest import RTSPIngestor
 from core.ml_worker import MLWorker
+
+load_dotenv(dotenv_path=Path(__file__).parent / "config.env")
 
 logging.basicConfig(
     level=logging.INFO,

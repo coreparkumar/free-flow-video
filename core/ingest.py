@@ -1,15 +1,20 @@
 import asyncio
 import logging
+import os
 import time
 from collections import deque
 from dataclasses import dataclass
+from pathlib import Path
 from typing import AsyncGenerator, Optional
 
 import av
 import cv2
 import numpy as np
+from dotenv import load_dotenv
 
 logger = logging.getLogger(__name__)
+
+load_dotenv(Path(__file__).resolve().parent.parent / "config.env")
 
 
 @dataclass
@@ -22,13 +27,13 @@ class FramePacket:
 class RTSPIngestor:
     def __init__(
         self,
-        rtsp_url: str,
+        rtsp_url: Optional[str] = None,
         buffer_size: int = 150,
         reconnect_base_delay: float = 1.0,
         max_reconnect_delay: float = 60.0,
         connection_timeout: float = 10.0,
     ):
-        self.rtsp_url = rtsp_url
+        self.rtsp_url = rtsp_url or os.getenv("rtsp_url", "rtsp://localhost:8554/stream")
         self.buffer_size = buffer_size
         self.reconnect_base_delay = reconnect_base_delay
         self.max_reconnect_delay = max_reconnect_delay
